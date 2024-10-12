@@ -9,6 +9,7 @@ click==8.1.7
 dominate==2.9.1
 feedgen==1.0.0
 Flask==2.3.3
+#Flask==3.0.3
 Flask-Babel==4.0.0
 Flask-Login==0.6.3
 Flask-Session==0.8.0
@@ -22,7 +23,8 @@ polib==1.2.0
 psycopg2==2.9.9
 PyJWT==2.8.0
 pyparsing==3.1.2
-python-magic==0.4.27
+#python-magic==0.4.27
+python-magic-bin==0.4.14
 pysolr==3.9.0
 python-dateutil==2.9.0.post0
 pytz
