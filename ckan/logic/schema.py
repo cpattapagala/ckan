@@ -385,7 +385,7 @@ def default_extras_schema(ignore: Validator, not_empty: Validator,
     return {
         'id': [ignore_missing, empty_if_not_sysadmin, uuid_validator],
         'key': [not_empty, extra_key_not_in_root_schema, unicode_safe],
-        'value': [not_missing],
+        'value': [not_missing, unicode_safe],
         'state': [ignore],
         'deleted': [ignore_missing],
         'revision_timestamp': [ignore],
@@ -394,13 +394,13 @@ def default_extras_schema(ignore: Validator, not_empty: Validator,
 
 
 @validator_args
-def default_show_extras_schema(ignore: Validator):
+def default_show_extras_schema(
+        ignore: Validator, not_empty: Validator) -> Schema:
 
-    schema = default_extras_schema()
-
-    schema["id"] = [ignore]
-
-    return schema
+    return {
+        'key': [not_empty],
+        'value': [not_empty],
+    }
 
 
 @validator_args
@@ -457,7 +457,7 @@ def default_user_schema(
         ignore: Validator, boolean_validator: Validator,
         empty_if_not_sysadmin: Validator,
         uuid_validator: Validator, user_id_does_not_exist: Validator,
-        json_object: Validator) -> Schema:
+        json_object: Validator, limit_sysadmin_update: Validator) -> Schema:
     return {
         'id': [ignore_missing, empty_if_not_sysadmin, uuid_validator,
                user_id_does_not_exist, unicode_safe],
@@ -471,7 +471,8 @@ def default_user_schema(
                   unicode_safe],
         'about': [ignore_missing, user_about_validator, unicode_safe],
         'created': [ignore],
-        'sysadmin': [ignore_missing, ignore_not_sysadmin],
+        'sysadmin': [ignore_missing, ignore_not_sysadmin,
+                     limit_sysadmin_update],
         'reset_key': [ignore],
         'activity_streams_email_notifications': [ignore_missing,
                                                  boolean_validator],
@@ -498,6 +499,23 @@ def user_new_form_schema(
     schema['password1'] = [unicode_safe, user_both_passwords_entered,
                            user_password_validator, user_passwords_match]
     schema['password2'] = [unicode_safe]
+
+    return schema
+
+
+@validator_args
+def user_perform_reset_form_schema(
+        not_empty: Validator, unicode_safe: Validator,
+        user_both_passwords_entered: Validator,
+        user_id_or_name_exists: Validator,
+        user_password_validator: Validator, user_passwords_match: Validator):
+    schema = default_user_schema()
+
+    schema["id"] = [not_empty, user_id_or_name_exists, unicode_safe]
+    schema['password1'] = [unicode_safe, user_both_passwords_entered,
+                           user_password_validator, user_passwords_match]
+    schema['password2'] = [unicode_safe]
+    schema['reset_key'] = [not_empty, unicode_safe]
 
     return schema
 
@@ -829,10 +847,13 @@ def update_configuration_schema():
 
 @validator_args
 def job_list_schema(
-        ignore_missing: Validator, list_of_strings: Validator
+        ignore_missing: Validator, list_of_strings: Validator,
+        int_validator: Validator, boolean_validator: Validator
 ) -> Schema:
     return {
         u'queues': [ignore_missing, list_of_strings],
+        'limit': [ignore_missing, int_validator],
+        'ids_only': [ignore_missing, boolean_validator],
     }
 
 

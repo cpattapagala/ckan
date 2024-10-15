@@ -288,14 +288,14 @@ this.ckan.module('datatables_view', function (jQuery) {
       const defaultview = dtprv.data('default-view')
 
       // get view mode setting from localstorage (table or list/responsive])
-      const lastView = getWithExpiry('lastView')
+      const lastView = getWithExpiry('lastView-' + gresviewId)
       if (!lastView) {
         if (responsiveflag) {
           gcurrentView = 'list' // aka responsive
         } else {
           gcurrentView = defaultview
         }
-        setWithExpiry('lastView', gcurrentView, 0)
+        setWithExpiry('lastView-' + gresviewId, gcurrentView, 0)
       } else {
         gcurrentView = lastView
       }
@@ -385,6 +385,11 @@ this.ckan.module('datatables_view', function (jQuery) {
       // en is the default language, no need to load i18n file
       if (languagefile === '/vendor/DataTables/i18n/en.json') {
         activelanguage = ''
+      // load i18n files for zh_Hant_TW and zh_Hans_CN language
+      } else if (languagefile === '/vendor/DataTables/i18n/zh_Hant_TW.json') {
+        activelanguage = '/vendor/DataTables/i18n/zh_Hant.json'
+      } else if (languagefile === '/vendor/DataTables/i18n/zh_Hans_CN.json') {
+        activelanguage = '/vendor/DataTables/i18n/zh_CN.json'
       }
 
       // settings if gcurrentView === table
@@ -558,7 +563,7 @@ this.ckan.module('datatables_view', function (jQuery) {
           // save selected rows settings
           gsavedSelected = data.selected
           // save view mode
-          setWithExpiry('lastView', data.viewmode, 0)
+          setWithExpiry('lastView-' + gresviewId, data.viewmode, 0)
 
           // restore values of column filters
           const api = new $.fn.dataTable.Api(settings)
@@ -714,7 +719,7 @@ this.ckan.module('datatables_view', function (jQuery) {
               gcurrentView = 'list'
               $('#dtprv').addClass('dt-responsive')
             }
-            setWithExpiry('lastView', gcurrentView, 0)
+            setWithExpiry('lastView-' + gresviewId, gcurrentView, 0)
             window.localStorage.removeItem('loadctr-' + gresviewId)
             dt.state.clear()
             window.location.reload()
@@ -900,6 +905,8 @@ this.ckan.module('datatables_view', function (jQuery) {
                         : ' <span class="fa fa-sort-amount-desc"></span> ')
         })
         $('div.sortinfo').html(gsortInfo)
+        //adjust column widths after sorting
+        fitColText();
       })
     }
   }
