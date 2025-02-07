@@ -1,0 +1,72 @@
+#CURRENT STATUS
+
+# update ckan to latest version
+# 10/11/2024: did not push merged changes yet as conflicts need to be resolved
+# 1/25/2025: merged conflicts, pushed master in working copy to remote origin; git push origin master
+	1. issue #8347 <-> #8381 is unresolved. however the issue seems to be fixed in #8381 but not merged to the latest version.
+	2. TO DO: Fix requires review and testing
+
+
+
+Understand pull request
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+template not rendered properly: figure out root cause
+
+
+SOURCE of BUG: view-source:http://localhost:5000/dashboard/datasets
+
+&lt;i class=&quot;fa fa-list&quot;&gt;&lt;/i&gt; News feed
+&lt;i class=&quot;fa fa-sitemap&quot;&gt;&lt;/i&gt; My Datasets
+&lt;i class=&quot;fa fa-building&quot;&gt;&lt;/i&gt; My Organizations
+&lt;i class=&quot;fa fa-users&quot;&gt;&lt;/i&gt; My Groups
+
+/Users/chaitu/Documents/opensource/ckans/ckan/default/lib/python3.12/site-packages/ckan/lib/helpers.py
+
+class LinkForExtension(BaseExtension):
+    ''' Custom link_for tag
+
+    {% link_for <params> %}
+
+    see lib.helpers.nav_link() for more details.
+    '''
+
+    tags = set(['link_for'])
+
+    @classmethod
+    def _call(cls, args: Iterable[Any], kwargs: dict[str, Any]):
+        return h.nav_link(*args, **kwargs)
+
+
+/Users/chaitu/Documents/opensource/ckans/ckan/default/lib/python3.12/site-packages/ckan/lib/jinja_extensions.py
+
+class LinkForExtension(BaseExtension):
+    ''' Custom link_for tag
+
+    {% link_for <params> %}
+
+    see lib.helpers.nav_link() for more details.
+    '''
+
+    tags = set(['link_for'])
+
+    @classmethod
+    def _call(cls, args: Iterable[Any], kwargs: dict[str, Any]):
+        return h.nav_link(*args, **kwargs)
+
+
+/Users/chaitu/Documents/opensource/ckans/ckan/default/lib/python3.12/site-packages/ckan/templates/user/dashboard.html
+
+        <div class="content_action">
+          {% link_for _('Profile settings'), named_route='user.edit', id=user.name, class_='btn btn-default', icon='cog' %}
+        </div>
+
+RESULT: Commented out obj = util.escape(obj)
+
+      if isinstance(obj, basestring):
+        #obj = util.escape(obj)
+        self.children.append(obj)
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

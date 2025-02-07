@@ -1,0 +1,55 @@
+repository to use: /Users/chaitu/Documents/opensource/ckans/ckan
+
+#virtual envirnoment: . /usr/local/lib/ckan.2.11/default/bin/activate
+
+ckan generate config /etc/ckan/default/ckan.ini
+#pip install ckan==2.10.5 or 2.11
+
+#Set configuration file envirnoment variable to use ckan command directly: ckan run; ckan db init
+
+export CKAN_INI='/etc/ckan/default/ckan.ini'
+
+postgres create user/database (only first time check if already created)
+sudo -u chaitu createdb -O chaitu ckan_default -E utf-8
+to check database is initialized properly: ckan -c /etc/ckan/default/ckan.ini db init 
+kick off docker solr
+kick off docker redis
+launch ckan site: ckan -c /etc/ckan/default/ckan.ini run
+site url : http://demo.ckan.org  /  ckan.site_url : http://127.0.0.1:5000
+
+#creating admin for the ckan site
+ckan sysadmin add ckan_admin email=chaitu.cu@gmail.com name=ckan_admin
+
+#removing user and admin
+ckan -c /etc/ckan/default/ckan.ini user remove charles
+ckan -c /etc/ckan/default/ckan.ini sysadmin remove charles  
+
+#datasets
+started and stopped the server, dataset persists
+
+#API
+http://localhost:5000/api/3/action/package_show?id=4a2f9f49-7827-4ff2-8da7-f1288ff62bca  (package_id)
+
+#solr
+kick off docker solr
+
+#AUXILLARY
+	-- database config files are located here and database config file is add by you over here to index table as documents in solr: /var/solr/data/ckan/conf
+	-- add that file in solrconfig file as a request handler
+	-- add fields and attributes to solr managed schema file
+	-- if config files are changed stop the server and restart the server to update solr with new configs
+
+#Generate fake dataset
+	1) Generate organization id: ckan -c /etc/ckan/default/ckan.ini generate fake-data organization
+	2) jq .id -r; get owner id from running step 1; or owner_org=$(ckan generate fake-data organization | jq .id -r)
+	3) Generate dataset: ckan generate fake-data dataset --owner_org=$owner_org
+
+Organizations:
+
+1) Organization ID: use POSTMAN API command organization_show
+	id=organization-npby-1534-mknq obtained from organization URL, 
+	CMD: http://localhost:5000/api/action/organization_show?id=organization-npby-1534-mknq
+
+#ckan version from command: curl -v http://localhost:5000/api/3/action/status_show
+
+	Running on 2.12
