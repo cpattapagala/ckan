@@ -61,3 +61,26 @@ junit
 .gitconfig
 .npm
 .test_durations
+
+#[custom]
+#site-packages
+default/bin/
+default/include/
+
+!default/lib/
+default/lib/*
+!default/lib/python3.12/
+default/lib/python3.12/*
+!default/lib/python3.12/site-packages
+default/lib/python3.12/site-packages/*
+
+#except ckan
+!default/lib/python3.12/site-packages/ckan/
+default/lib/python3.12/site-packages/ckan/__pycache__
+!default/lib/python3.12/site-packages/ckan/*
+default/lib/python3.12/site-packages/ckan/*/*/LC_MESSAGES/ckan.mo
+
+#except dominate package
+!default/lib/python3.12/site-packages/dominate/
+!default/lib/python3.12/site-packages/dominate/*
+default/lib/python3.12/site-packages/dominate/__pycache__
