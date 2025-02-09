@@ -2,10 +2,10 @@ name: Publish to PyPI
 
 # Publish to PyPI when a tag is pushed
 on:
-  workflow_dispatch: # Only runs when manually triggered
-  #push:
-  #  tags:
-  #    - 'ckan-**'
+  #workflow_dispatch: # Only runs when manually triggered
+  push:
+    tags:
+      - "ckan-**"
 
 jobs:
   build:
