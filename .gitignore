@@ -74,9 +74,9 @@ default/lib/python3.12/*
 default/lib/python3.12/site-packages/*
 
 #except ckan
-!default/lib/python3.12/site-packages/ckan/
+!default/lib/python3.12/site-packages/ckan
 default/lib/python3.12/site-packages/ckan/__pycache__
-!default/lib/python3.12/site-packages/ckan/*
+#!default/lib/python3.12/site-packages/ckan/*
 
 #except dominate package
 !default/lib/python3.12/site-packages/dominate/
